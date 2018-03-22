@@ -6,6 +6,7 @@ namespace MVCSimpleWebgrid.Controllers
 {
     public class UserController : Controller
     {
+        private List<Student> _students = new List<Student>();
         //
         // GET: /User/
 
@@ -16,13 +17,12 @@ namespace MVCSimpleWebgrid.Controllers
 
         public ActionResult List(string search)
         {
-            var students = new List<Student>();
             //here  MyDatabaseEntities is the dbcontext
-            using (MyDatabaseEntities dc = new MyDatabaseEntities())
+            using (var dc = new MyDatabaseEntities())
             {
-               students = dc.Students.Where(x => x.StdFirstName.Contains(search) || search == null).ToList();
+               _students = dc.Students.Where(x => x.StdFirstName.Contains(search) || search == null).ToList();
             }
-            return View(students);
+            return View(_students);
         }
 
     }
