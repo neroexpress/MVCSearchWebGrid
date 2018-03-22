@@ -20,14 +20,7 @@ namespace MVCSimpleWebgrid.Controllers
             //here  MyDatabaseEntities is the dbcontext
             using (MyDatabaseEntities dc = new MyDatabaseEntities())
             {
-                if (search != null)
-                {
-                    students = dc.Students.Where(x => x.StdFirstName.Contains(search)).ToList();
-                }
-                else
-                {
-                    students = dc.Students.ToList();
-                }
+               students = dc.Students.Where(x => x.StdFirstName.Contains(search) || search == null).ToList();
             }
             return View(students);
         }
