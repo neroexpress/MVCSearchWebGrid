@@ -1,0 +1,510 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="MyDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityType Name="Club">
+          <Key>
+            <PropertyRef Name="ClubNo" />
+          </Key>
+          <Property Name="ClubNo" Type="char" MaxLength="6" Nullable="false" />
+          <Property Name="CName" Type="char" MaxLength="50" />
+          <Property Name="CPurpose" Type="char" MaxLength="10" />
+          <Property Name="CBudget" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="CActual" Type="decimal" Precision="10" Scale="2" />
+        </EntityType>
+        <EntityType Name="Course">
+          <Key>
+            <PropertyRef Name="CourseNo" />
+          </Key>
+          <Property Name="CourseNo" Type="char" MaxLength="6" Nullable="false" />
+          <Property Name="CrsDesc" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CrsUnits" Type="int" />
+        </EntityType>
+        <EntityType Name="Enrollment">
+          <Key>
+            <PropertyRef Name="OfferNo" />
+            <PropertyRef Name="StdNo" />
+          </Key>
+          <Property Name="OfferNo" Type="int" Nullable="false" />
+          <Property Name="StdNo" Type="char" MaxLength="11" Nullable="false" />
+          <Property Name="EnrGrade" Type="decimal" Precision="3" Scale="2" />
+        </EntityType>
+        <EntityType Name="Faculty">
+          <Key>
+            <PropertyRef Name="FacNo" />
+          </Key>
+          <Property Name="FacNo" Type="char" MaxLength="11" Nullable="false" />
+          <Property Name="FacFirstName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="FacLastName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="FacCity" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="FacState" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="FacDept" Type="char" MaxLength="6" />
+          <Property Name="FacRank" Type="char" MaxLength="4" />
+          <Property Name="FacSalary" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="FacSupervisor" Type="char" MaxLength="11" />
+          <Property Name="FacHireDate" Type="datetime" />
+          <Property Name="FacZipCode" Type="char" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Offering">
+          <Key>
+            <PropertyRef Name="OfferNo" />
+          </Key>
+          <Property Name="OfferNo" Type="int" Nullable="false" />
+          <Property Name="CourseNo" Type="char" MaxLength="6" Nullable="false" />
+          <Property Name="OffTerm" Type="char" MaxLength="6" Nullable="false" />
+          <Property Name="OffYear" Type="int" Nullable="false" />
+          <Property Name="OffLocation" Type="varchar" MaxLength="30" />
+          <Property Name="OffTime" Type="varchar" MaxLength="10" />
+          <Property Name="FacNo" Type="char" MaxLength="11" />
+          <Property Name="OffDays" Type="char" MaxLength="4" />
+        </EntityType>
+        <EntityType Name="StdClub">
+          <Key>
+            <PropertyRef Name="StdNo" />
+            <PropertyRef Name="ClubNo" />
+          </Key>
+          <Property Name="StdNo" Type="char" MaxLength="6" Nullable="false" />
+          <Property Name="ClubNo" Type="char" MaxLength="6" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="StdNo" />
+          </Key>
+          <Property Name="StdNo" Type="char" MaxLength="11" Nullable="false" />
+          <Property Name="StdFirstName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="StdLastName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="StdCity" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="StdState" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="StdZip" Type="char" MaxLength="10" Nullable="false" />
+          <Property Name="StdMajor" Type="char" MaxLength="6" />
+          <Property Name="StdClass" Type="char" MaxLength="2" />
+          <Property Name="StdGPA" Type="decimal" Precision="3" Scale="2" />
+        </EntityType>
+        <Association Name="CourseFK">
+          <End Role="Course" Type="Self.Course" Multiplicity="1" />
+          <End Role="Offering" Type="Self.Offering" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="CourseNo" />
+            </Principal>
+            <Dependent Role="Offering">
+              <PropertyRef Name="CourseNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FacultyFK">
+          <End Role="Faculty" Type="Self.Faculty" Multiplicity="0..1" />
+          <End Role="Offering" Type="Self.Offering" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Faculty">
+              <PropertyRef Name="FacNo" />
+            </Principal>
+            <Dependent Role="Offering">
+              <PropertyRef Name="FacNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OfferingFK">
+          <End Role="Offering" Type="Self.Offering" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Offering">
+              <PropertyRef Name="OfferNo" />
+            </Principal>
+            <Dependent Role="Enrollment">
+              <PropertyRef Name="OfferNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="StdClubFK2">
+          <End Role="Club" Type="Self.Club" Multiplicity="1" />
+          <End Role="StdClub" Type="Self.StdClub" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Club">
+              <PropertyRef Name="ClubNo" />
+            </Principal>
+            <Dependent Role="StdClub">
+              <PropertyRef Name="ClubNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="StudentFK">
+          <End Role="Student" Type="Self.Student" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="StdNo" />
+            </Principal>
+            <Dependent Role="Enrollment">
+              <PropertyRef Name="StdNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SupervisorFK">
+          <End Role="Faculty" Type="Self.Faculty" Multiplicity="0..1" />
+          <End Role="Faculty1" Type="Self.Faculty" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Faculty">
+              <PropertyRef Name="FacNo" />
+            </Principal>
+            <Dependent Role="Faculty1">
+              <PropertyRef Name="FacSupervisor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MyDatabaseModelStoreContainer">
+          <EntitySet Name="Club" EntityType="Self.Club" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Course" EntityType="Self.Course" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Enrollment" EntityType="Self.Enrollment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Faculty" EntityType="Self.Faculty" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Offering" EntityType="Self.Offering" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StdClub" EntityType="Self.StdClub" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Student" EntityType="Self.Student" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="CourseFK" Association="Self.CourseFK">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="Offering" EntitySet="Offering" />
+          </AssociationSet>
+          <AssociationSet Name="FacultyFK" Association="Self.FacultyFK">
+            <End Role="Faculty" EntitySet="Faculty" />
+            <End Role="Offering" EntitySet="Offering" />
+          </AssociationSet>
+          <AssociationSet Name="OfferingFK" Association="Self.OfferingFK">
+            <End Role="Offering" EntitySet="Offering" />
+            <End Role="Enrollment" EntitySet="Enrollment" />
+          </AssociationSet>
+          <AssociationSet Name="StdClubFK2" Association="Self.StdClubFK2">
+            <End Role="Club" EntitySet="Club" />
+            <End Role="StdClub" EntitySet="StdClub" />
+          </AssociationSet>
+          <AssociationSet Name="StudentFK" Association="Self.StudentFK">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="Enrollment" EntitySet="Enrollment" />
+          </AssociationSet>
+          <AssociationSet Name="SupervisorFK" Association="Self.SupervisorFK">
+            <End Role="Faculty" EntitySet="Faculty" />
+            <End Role="Faculty1" EntitySet="Faculty" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MyDatabaseModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="MyDatabaseEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Clubs" EntityType="MyDatabaseModel.Club" />
+          <EntitySet Name="Courses" EntityType="MyDatabaseModel.Course" />
+          <EntitySet Name="Enrollments" EntityType="MyDatabaseModel.Enrollment" />
+          <EntitySet Name="Faculties" EntityType="MyDatabaseModel.Faculty" />
+          <EntitySet Name="Offerings" EntityType="MyDatabaseModel.Offering" />
+          <EntitySet Name="StdClubs" EntityType="MyDatabaseModel.StdClub" />
+          <EntitySet Name="Students" EntityType="MyDatabaseModel.Student" />
+          <AssociationSet Name="StdClubFK2" Association="MyDatabaseModel.StdClubFK2">
+            <End Role="Club" EntitySet="Clubs" />
+            <End Role="StdClub" EntitySet="StdClubs" />
+          </AssociationSet>
+          <AssociationSet Name="CourseFK" Association="MyDatabaseModel.CourseFK">
+            <End Role="Course" EntitySet="Courses" />
+            <End Role="Offering" EntitySet="Offerings" />
+          </AssociationSet>
+          <AssociationSet Name="OfferingFK" Association="MyDatabaseModel.OfferingFK">
+            <End Role="Offering" EntitySet="Offerings" />
+            <End Role="Enrollment" EntitySet="Enrollments" />
+          </AssociationSet>
+          <AssociationSet Name="StudentFK" Association="MyDatabaseModel.StudentFK">
+            <End Role="Student" EntitySet="Students" />
+            <End Role="Enrollment" EntitySet="Enrollments" />
+          </AssociationSet>
+          <AssociationSet Name="FacultyFK" Association="MyDatabaseModel.FacultyFK">
+            <End Role="Faculty" EntitySet="Faculties" />
+            <End Role="Offering" EntitySet="Offerings" />
+          </AssociationSet>
+          <AssociationSet Name="SupervisorFK" Association="MyDatabaseModel.SupervisorFK">
+            <End Role="Faculty" EntitySet="Faculties" />
+            <End Role="Faculty1" EntitySet="Faculties" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Club">
+          <Key>
+            <PropertyRef Name="ClubNo" />
+          </Key>
+          <Property Name="ClubNo" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="CName" Type="String" MaxLength="50" FixedLength="true" Unicode="false" />
+          <Property Name="CPurpose" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="CBudget" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="CActual" Type="Decimal" Precision="10" Scale="2" />
+          <NavigationProperty Name="StdClubs" Relationship="MyDatabaseModel.StdClubFK2" FromRole="Club" ToRole="StdClub" />
+        </EntityType>
+        <EntityType Name="Course">
+          <Key>
+            <PropertyRef Name="CourseNo" />
+          </Key>
+          <Property Name="CourseNo" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="CrsDesc" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CrsUnits" Type="Int32" />
+          <NavigationProperty Name="Offerings" Relationship="MyDatabaseModel.CourseFK" FromRole="Course" ToRole="Offering" />
+        </EntityType>
+        <EntityType Name="Enrollment">
+          <Key>
+            <PropertyRef Name="OfferNo" />
+            <PropertyRef Name="StdNo" />
+          </Key>
+          <Property Name="OfferNo" Type="Int32" Nullable="false" />
+          <Property Name="StdNo" Type="String" Nullable="false" MaxLength="11" FixedLength="true" Unicode="false" />
+          <Property Name="EnrGrade" Type="Decimal" Precision="3" Scale="2" />
+          <NavigationProperty Name="Offering" Relationship="MyDatabaseModel.OfferingFK" FromRole="Enrollment" ToRole="Offering" />
+          <NavigationProperty Name="Student" Relationship="MyDatabaseModel.StudentFK" FromRole="Enrollment" ToRole="Student" />
+        </EntityType>
+        <EntityType Name="Faculty">
+          <Key>
+            <PropertyRef Name="FacNo" />
+          </Key>
+          <Property Name="FacNo" Type="String" Nullable="false" MaxLength="11" FixedLength="true" Unicode="false" />
+          <Property Name="FacFirstName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="FacLastName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="FacCity" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="FacState" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="FacDept" Type="String" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="FacRank" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
+          <Property Name="FacSalary" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="FacSupervisor" Type="String" MaxLength="11" FixedLength="true" Unicode="false" />
+          <Property Name="FacHireDate" Type="DateTime" Precision="3" />
+          <Property Name="FacZipCode" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="Offerings" Relationship="MyDatabaseModel.FacultyFK" FromRole="Faculty" ToRole="Offering" />
+          <NavigationProperty Name="Faculty1" Relationship="MyDatabaseModel.SupervisorFK" FromRole="Faculty" ToRole="Faculty1" />
+          <NavigationProperty Name="Faculty2" Relationship="MyDatabaseModel.SupervisorFK" FromRole="Faculty1" ToRole="Faculty" />
+        </EntityType>
+        <EntityType Name="Offering">
+          <Key>
+            <PropertyRef Name="OfferNo" />
+          </Key>
+          <Property Name="OfferNo" Type="Int32" Nullable="false" />
+          <Property Name="CourseNo" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="OffTerm" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="OffYear" Type="Int32" Nullable="false" />
+          <Property Name="OffLocation" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="OffTime" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="FacNo" Type="String" MaxLength="11" FixedLength="true" Unicode="false" />
+          <Property Name="OffDays" Type="String" MaxLength="4" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="Course" Relationship="MyDatabaseModel.CourseFK" FromRole="Offering" ToRole="Course" />
+          <NavigationProperty Name="Enrollments" Relationship="MyDatabaseModel.OfferingFK" FromRole="Offering" ToRole="Enrollment" />
+          <NavigationProperty Name="Faculty" Relationship="MyDatabaseModel.FacultyFK" FromRole="Offering" ToRole="Faculty" />
+        </EntityType>
+        <EntityType Name="StdClub">
+          <Key>
+            <PropertyRef Name="StdNo" />
+            <PropertyRef Name="ClubNo" />
+          </Key>
+          <Property Name="StdNo" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="ClubNo" Type="String" Nullable="false" MaxLength="6" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="Club" Relationship="MyDatabaseModel.StdClubFK2" FromRole="StdClub" ToRole="Club" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="StdNo" />
+          </Key>
+          <Property Name="StdNo" Type="String" Nullable="false" MaxLength="11" FixedLength="true" Unicode="false" />
+          <Property Name="StdFirstName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="StdLastName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="StdCity" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="StdState" Type="String" Nullable="false" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="StdZip" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="StdMajor" Type="String" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="StdClass" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="StdGPA" Type="Decimal" Precision="3" Scale="2" />
+          <NavigationProperty Name="Enrollments" Relationship="MyDatabaseModel.StudentFK" FromRole="Student" ToRole="Enrollment" />
+        </EntityType>
+        <Association Name="StdClubFK2">
+          <End Type="MyDatabaseModel.Club" Role="Club" Multiplicity="1" />
+          <End Type="MyDatabaseModel.StdClub" Role="StdClub" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Club">
+              <PropertyRef Name="ClubNo" />
+            </Principal>
+            <Dependent Role="StdClub">
+              <PropertyRef Name="ClubNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="CourseFK">
+          <End Type="MyDatabaseModel.Course" Role="Course" Multiplicity="1" />
+          <End Type="MyDatabaseModel.Offering" Role="Offering" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="CourseNo" />
+            </Principal>
+            <Dependent Role="Offering">
+              <PropertyRef Name="CourseNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="OfferingFK">
+          <End Type="MyDatabaseModel.Offering" Role="Offering" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="MyDatabaseModel.Enrollment" Role="Enrollment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Offering">
+              <PropertyRef Name="OfferNo" />
+            </Principal>
+            <Dependent Role="Enrollment">
+              <PropertyRef Name="OfferNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="StudentFK">
+          <End Type="MyDatabaseModel.Student" Role="Student" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="MyDatabaseModel.Enrollment" Role="Enrollment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="StdNo" />
+            </Principal>
+            <Dependent Role="Enrollment">
+              <PropertyRef Name="StdNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FacultyFK">
+          <End Type="MyDatabaseModel.Faculty" Role="Faculty" Multiplicity="0..1" />
+          <End Type="MyDatabaseModel.Offering" Role="Offering" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Faculty">
+              <PropertyRef Name="FacNo" />
+            </Principal>
+            <Dependent Role="Offering">
+              <PropertyRef Name="FacNo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="SupervisorFK">
+          <End Type="MyDatabaseModel.Faculty" Role="Faculty" Multiplicity="0..1" />
+          <End Type="MyDatabaseModel.Faculty" Role="Faculty1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Faculty">
+              <PropertyRef Name="FacNo" />
+            </Principal>
+            <Dependent Role="Faculty1">
+              <PropertyRef Name="FacSupervisor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MyDatabaseModelStoreContainer" CdmEntityContainer="MyDatabaseEntities">
+        <EntitySetMapping Name="Clubs">
+            <EntityTypeMapping TypeName="MyDatabaseModel.Club">
+              <MappingFragment StoreEntitySet="Club">
+                <ScalarProperty Name="CActual" ColumnName="CActual" />
+                <ScalarProperty Name="CBudget" ColumnName="CBudget" />
+                <ScalarProperty Name="CPurpose" ColumnName="CPurpose" />
+                <ScalarProperty Name="CName" ColumnName="CName" />
+                <ScalarProperty Name="ClubNo" ColumnName="ClubNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Courses">
+            <EntityTypeMapping TypeName="MyDatabaseModel.Course">
+              <MappingFragment StoreEntitySet="Course">
+                <ScalarProperty Name="CrsUnits" ColumnName="CrsUnits" />
+                <ScalarProperty Name="CrsDesc" ColumnName="CrsDesc" />
+                <ScalarProperty Name="CourseNo" ColumnName="CourseNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Enrollments">
+            <EntityTypeMapping TypeName="MyDatabaseModel.Enrollment">
+              <MappingFragment StoreEntitySet="Enrollment">
+                <ScalarProperty Name="EnrGrade" ColumnName="EnrGrade" />
+                <ScalarProperty Name="StdNo" ColumnName="StdNo" />
+                <ScalarProperty Name="OfferNo" ColumnName="OfferNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Faculties">
+            <EntityTypeMapping TypeName="MyDatabaseModel.Faculty">
+              <MappingFragment StoreEntitySet="Faculty">
+                <ScalarProperty Name="FacZipCode" ColumnName="FacZipCode" />
+                <ScalarProperty Name="FacHireDate" ColumnName="FacHireDate" />
+                <ScalarProperty Name="FacSupervisor" ColumnName="FacSupervisor" />
+                <ScalarProperty Name="FacSalary" ColumnName="FacSalary" />
+                <ScalarProperty Name="FacRank" ColumnName="FacRank" />
+                <ScalarProperty Name="FacDept" ColumnName="FacDept" />
+                <ScalarProperty Name="FacState" ColumnName="FacState" />
+                <ScalarProperty Name="FacCity" ColumnName="FacCity" />
+                <ScalarProperty Name="FacLastName" ColumnName="FacLastName" />
+                <ScalarProperty Name="FacFirstName" ColumnName="FacFirstName" />
+                <ScalarProperty Name="FacNo" ColumnName="FacNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Offerings">
+            <EntityTypeMapping TypeName="MyDatabaseModel.Offering">
+              <MappingFragment StoreEntitySet="Offering">
+                <ScalarProperty Name="OffDays" ColumnName="OffDays" />
+                <ScalarProperty Name="FacNo" ColumnName="FacNo" />
+                <ScalarProperty Name="OffTime" ColumnName="OffTime" />
+                <ScalarProperty Name="OffLocation" ColumnName="OffLocation" />
+                <ScalarProperty Name="OffYear" ColumnName="OffYear" />
+                <ScalarProperty Name="OffTerm" ColumnName="OffTerm" />
+                <ScalarProperty Name="CourseNo" ColumnName="CourseNo" />
+                <ScalarProperty Name="OfferNo" ColumnName="OfferNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StdClubs">
+            <EntityTypeMapping TypeName="MyDatabaseModel.StdClub">
+              <MappingFragment StoreEntitySet="StdClub">
+                <ScalarProperty Name="ClubNo" ColumnName="ClubNo" />
+                <ScalarProperty Name="StdNo" ColumnName="StdNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Students">
+            <EntityTypeMapping TypeName="MyDatabaseModel.Student">
+              <MappingFragment StoreEntitySet="Student">
+                <ScalarProperty Name="StdGPA" ColumnName="StdGPA" />
+                <ScalarProperty Name="StdClass" ColumnName="StdClass" />
+                <ScalarProperty Name="StdMajor" ColumnName="StdMajor" />
+                <ScalarProperty Name="StdZip" ColumnName="StdZip" />
+                <ScalarProperty Name="StdState" ColumnName="StdState" />
+                <ScalarProperty Name="StdCity" ColumnName="StdCity" />
+                <ScalarProperty Name="StdLastName" ColumnName="StdLastName" />
+                <ScalarProperty Name="StdFirstName" ColumnName="StdFirstName" />
+                <ScalarProperty Name="StdNo" ColumnName="StdNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
